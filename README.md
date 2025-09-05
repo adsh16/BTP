@@ -4,6 +4,8 @@ code files and relevant things related to btp
 
 # References
 
+[ExacliDraw Road Map](https://excalidraw.com/#room=f5b932d66db926c2c44e,jdwk_7GHJ5otTKs64UHcUg)
+
 ## Dish Identification
 - **[Food-101](https://data.vision.ee.ethz.ch/cvl/datasets_extra/food-101/)**  
   Contains 101,000 images across 101 categories. This dataset is widely used for food recognition and will serve as the base for identifying dishes and their categories in the project.
