@@ -1,6 +1,6 @@
 # BTP
 # FoodGPT/DishCovery/FoodGenie
-- Dishcovery: Visual Question Answering for Food Images
+- Dishcovery: A end-to-end VQA(Visual Question Answering) model for Food Images
 code files and relevant things related to btp
 
 
