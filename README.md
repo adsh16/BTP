@@ -28,6 +28,65 @@ This table breaks down the four custom-trained vision modules that act as the "s
 
 ---
 
+## Sample Workflow
+
+## Proposed Unified Architecture: A "Vision-Augmented" LLM
+
+Think of it this way: instead of training one giant model to answer "Is this healthy?", you will:
+
+1.  **Train specialist models (your "Vision Toolkit")** to analyze the image and output structured data.
+2.  **Feed this structured data to an LLM (your "Reasoning Engine")** which then answers the user's natural language question.
+
+Here’s a visual representation of this combined flow:
+
+**Input:** `Image of Paella` + `Query : "Is this a healthy option for a low-carb diet?"`
+
+---
+
+### Stage 1: The Vision Analysis Pipeline (Your "Tools")
+
+The image is fed in parallel to all the specialist models you plan to build.
+
+**Dish ID Model (trained on Food-101/Recipe1M+)**
+* **Output:** `{"dish": "Paella", "confidence": 0.92, "cuisine": "Spanish"}`
+
+**Ingredient Seg. Model (trained on FoodSeg103)**
+* **Output:** `{"ingredients_detected": ["rice", "shrimp", "mussels", "peas", "lemon_wedge"]}`
+
+**Quality Model (trained on Kaggle dataset)**
+* **Output:** `{"quality": "Fresh", "score": 0.98}`
+
+**Nutrition Model (trained on Nutrition5k)**
+* **Output:** `{"estimated_calories": 450, "protein_g": 22, "carbs_g": 55, "fat_g": 15}`
+
+---
+
+### Stage 2: The LLM Reasoning Engine (Your "Brain")
+
+All the structured data from Stage 1 is compiled into a single "context" string (e.g., a JSON or formatted text) and inserted into a prompt for a central LLM.
+
+**User Query:** "Is this a healthy option for a low-carb diet?"
+
+**Internal LLM Prompt (simplified):**
+
+SYSTEM: You are FoodGPT, a helpful assistant.
+Use the following vision analysis and web context to answer the user's question.
+
+**VISION ANALYSIS**
+```json
+{
+  "dish": "Paella",
+  "confidence": 0.92,
+  "cuisine": "Spanish",
+  "ingredients_detected": ["rice", "shrimp", "mussels", "peas", "lemon_wedge"],
+  "quality": "Fresh",
+  "estimated_calories": 450,
+  "protein_g": 22,
+  "carbs_g": 55,
+  "fat_g": 15
+}
+```
+
 ### Additional Models
 
 | Project Module | Dataset | Model Architecture | Model Task |
