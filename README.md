@@ -100,3 +100,42 @@ Use the following vision analysis and web context to answer the user's question.
   For cooked or prepared dishes, the dataset will be supplemented with additional curated examples and data augmentation to better capture real-world food quality conditions.
 ## WorkFlow Diagram
 <img width="1400" height="1600" alt="svgviewer-output" src="https://github.com/user-attachments/assets/42787172-903b-472c-b360-181b884129ac" />
+
+
+
+## Architecture
+
+### High-Level Pipeline
+```
+Input Image → CNN Encoder → Ingredient Decoder → Recipe Decoder → Output Recipe
+                ↓                   ↓                    ↓
+         Image Features      Ingredients List    Cooking Instructions
+```
+
+### Component Breakdown
+
+#### 1. **Image Encoder (EncoderCNN)**
+- **Base Model**: Pre-trained ResNet-50/101 (trained on ImageNet by team Pytorch)
+- **Purpose**: Extract visual features from food images (This will help us in getting the notion of the dish from the image)
+- **Output**: 512-dimensional feature vectors
+- **Key Operations**:
+  - Removes final classification layers
+  - Applies 1×1 convolution for dimension projection
+
+#### 2. **Ingredient Decoder (Transformer)**
+- **Architecture**: 4-layer transformer with 4 attention heads
+- **Input**: Image features from CNN encoder
+- **Output**: Predicted ingredient list
+- **Special Features**:
+  - Since ingredient order doesn't matter we inherits no positional embeddings
+  - End of Sequence prediction for variable-length lists
+  - We ensure that each ingredient is predicted once by implementing non replacement sampling
+
+#### 3. **Recipe Decoder (Transformer)**
+- **Architecture**: 16-layer transformer with 8 attention heads
+- **Input**: Image features + predicted ingredients
+- **Output**: Sequential cooking instructions
+- **Special Features**:
+  - Autoregressive generation with causal masking
+  - Positional embeddings for instruction ordering
+  - Cross-attention to both image and ingredient representations
