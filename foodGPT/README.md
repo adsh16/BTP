@@ -94,7 +94,7 @@ CUDA 10.2+ (optional, for GPU support)
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/dishcovery.git
+git clone https://github.com/akshatrajsaxena/dishcovery.git
 cd dishcovery
 ```
 
@@ -102,7 +102,7 @@ cd dishcovery
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate
 ```
 
 ### Step 3: Install Dependencies
@@ -474,3 +474,4 @@ If you find this project useful, please consider giving it a star!
 ---
 
 **Disclaimer**: This is an educational project demonstrating deployment of pre-trained models. The generated recipes should be verified before cooking. The model may produce inaccurate or incomplete recipes.
+
