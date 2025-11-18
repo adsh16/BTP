@@ -1,18 +1,15 @@
-"""
-LLM Chat Backend Handler for DishCovery
-Place this file in: Foodimg2Ing/llm_chat.py
-"""
-
 from flask import Blueprint, request, jsonify, session
 import os
 from groq import Groq
 
-# Create Blueprint
 llm_chat_bp = Blueprint('llm_chat', __name__)
 
-# Initialize Groq client
-# Set your API key as environment variable: export GROQ_API_KEY='your_key_here'
-client = Groq(api_key="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")
+try:
+    api_key = os.environ.get('GROQ_API_KEY', '[YOUR_GROQ_API_KEY]')
+    client = Groq(api_key=api_key)
+except Exception as e:
+    print(f"Error initializing Groq client: {e}")
+    client = None
 
 # Store conversation history in session
 def get_conversation_history():
@@ -29,17 +26,32 @@ def get_recipe_context():
 
 def set_recipe_context(title, ingredients, recipe):
     """Set the recipe context in session"""
+    # Handle the case where title is a list
+    recipe_title = title if isinstance(title, str) else (title[0] if title else "Unknown Recipe")
+    
+    # Handle ingredients - ensure it's a list of strings
+    if isinstance(ingredients, list) and len(ingredients) > 0:
+        ing_list = ingredients[0] if isinstance(ingredients[0], list) else ingredients
+    else:
+        ing_list = []
+    
+    # Handle recipe steps - ensure it's a list of strings
+    if isinstance(recipe, list) and len(recipe) > 0:
+        recipe_steps = recipe[0] if isinstance(recipe[0], list) else recipe
+    else:
+        recipe_steps = []
+    
     context = f"""You are a helpful cooking assistant. The user has identified the following recipe:
 
-Recipe Name: {title}
+Recipe Name: {recipe_title}
 
 Ingredients:
-{', '.join(ingredients)}
+{', '.join(ing_list)}
 
 Instructions:
-{chr(10).join([f"{i+1}. {step}" for i, step in enumerate(recipe)])}
+{chr(10).join([f"{i+1}. {step}" for i, step in enumerate(recipe_steps)])}
 
-Answer any questions the user has about this recipe. Be helpful, friendly, and provide additional cooking tips when relevant. If asked about substitutions, cooking techniques, or nutritional information, provide accurate and helpful information."""
+Answer any questions the user has about this recipe. Be helpful, friendly, and provide additional cooking tips when relevant. If asked about substitutions, cooking techniques, or nutritional information, provide accurate and helpful information. Keep your responses concise and practical."""
     
     session['recipe_context'] = context
     session.modified = True
@@ -67,6 +79,7 @@ def init_chat():
         })
     
     except Exception as e:
+        print(f"Error initializing chat: {e}")
         return jsonify({
             'status': 'error',
             'message': str(e)
@@ -76,6 +89,12 @@ def init_chat():
 def chat_message():
     """Handle chat messages"""
     try:
+        if not client:
+            return jsonify({
+                'status': 'error',
+                'message': 'Chat service is not available. Please check API configuration.'
+            }), 500
+        
         data = request.json
         user_message = data.get('message', '')
         
@@ -103,8 +122,9 @@ def chat_message():
             }
         ]
         
-        # Add conversation history
-        for msg in conversation_history:
+        # Add conversation history (last 10 exchanges to avoid token limits)
+        recent_history = conversation_history[-20:] if len(conversation_history) > 20 else conversation_history
+        for msg in recent_history:
             messages.append(msg)
         
         # Add current user message
@@ -135,7 +155,7 @@ def chat_message():
             "content": assistant_message
         })
         
-        # Keep only last 10 messages to avoid token limits
+        # Keep only last 20 messages (10 exchanges) to avoid token limits
         if len(conversation_history) > 20:
             conversation_history = conversation_history[-20:]
         
@@ -148,9 +168,10 @@ def chat_message():
         })
     
     except Exception as e:
+        print(f"Error in chat message: {e}")
         return jsonify({
             'status': 'error',
-            'message': f'Error: {str(e)}'
+            'message': f'Sorry, I encountered an error processing your message. Please try again.'
         }), 500
 
 @llm_chat_bp.route('/api/chat/clear', methods=['POST'])
@@ -166,6 +187,7 @@ def clear_chat():
         })
     
     except Exception as e:
+        print(f"Error clearing chat: {e}")
         return jsonify({
             'status': 'error',
             'message': str(e)
