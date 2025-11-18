@@ -296,6 +296,27 @@
         transform: scale(1.05);
     }
 
+    .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+        color: white;
+        text-decoration: none;
+    }
+
     .welcome-message {
         text-align: center;
         padding: 40px 20px;
@@ -349,9 +370,14 @@
                     <div class="chat-recipe-info" id="recipeTitle">{{ title[0] if title else 'No Recipe Loaded' }}</div>
                 </div>
             </div>
-            <button class="clear-chat-btn" onclick="clearChat()">
-                <i class="fas fa-trash-alt"></i> Clear
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <a href="{{ url_for('home') }}" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <button class="clear-chat-btn" onclick="clearChat()">
+                    <i class="fas fa-trash-alt"></i> Clear
+                </button>
+            </div>
         </div>
 
         <!-- Chat Messages -->
@@ -394,13 +420,15 @@
 </div>
 
 <script>
-    // Initialize chat with recipe data
+    // Initialize chat with recipe data (safe rendering via tojson)
     async function initializeChat() {
-        const recipeData = {
-            title: "{{ title[0] if title else '' }}",
-            ingredients: {{ ingredients[0] | tojson if ingredients else '[]' }},
-            recipe: {{ recipe[0] | tojson if recipe else '[]' }}
-        };
+        // Render a single JSON object using Jinja's tojson filter.
+        // This ensures strings / arrays are correctly escaped and shaped.
+        const recipeData = {{ {
+            "title": (title[0] if title else ""),
+            "ingredients": (ingredients[0] if ingredients else []),
+            "recipe": (recipe[0] if recipe else [])
+        } | tojson }};
 
         try {
             const response = await fetch('/api/chat/init', {
@@ -408,12 +436,29 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(recipeData)
+                body: JSON.stringify(recipeData),
             });
 
-            const data = await response.json();
+            if (!response.ok) {
+                // Server returned an HTTP error status (like 404/500)
+                const text = await response.text().catch(()=>null);
+                console.error('Init failed — HTTP', response.status, text);
+                return;
+            }
+
+            const data = await response.json().catch(err => {
+                console.error('Failed to parse JSON from init response:', err);
+                return null;
+            });
+
+            if (!data) return;
             if (data.status !== 'success') {
-                console.error('Failed to initialize chat:', data.message);
+                console.warn('Failed to initialize chat:', data);
+            } else {
+                // Optionally use returned data (e.g., seed assistant message)
+                if (data.seed_message) {
+                    addMessage('assistant', data.seed_message);
+                }
             }
         } catch (error) {
             console.error('Error initializing chat:', error);
@@ -577,7 +622,8 @@
     // Initialize chat on page load
     document.addEventListener('DOMContentLoaded', function() {
         initializeChat();
-        document.getElementById('chatInput').focus();
+        const inputEl = document.getElementById('chatInput');
+        if (inputEl) inputEl.focus();
     });
 </script>
 
