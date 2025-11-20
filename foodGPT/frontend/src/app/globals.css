@@ -1,0 +1,185 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Inter Font */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* 
+  Professional Color Palette - Radix UI Inspired
+  Light mode: Clean whites and soft grays
+  Dark mode: Slate-based (not pure black) for modern, less harsh appearance
+*/
+
+:root {
+  --radius: 0.75rem;
+
+  /* Light Mode - Clean & Bright */
+  --background: 0 0% 100%;
+  /* Pure white */
+  --foreground: 222 47% 11%;
+  /* Deep slate */
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+
+  --primary: 221 83% 53%;
+  /* Vibrant blue */
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96%;
+  /* Soft gray */
+  --secondary-foreground: 222 47% 11%;
+
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+
+  --accent: 210 40% 96%;
+  --accent-foreground: 222 47% 11%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214 32% 91%;
+  /* Light gray borders */
+  --input: 214 32% 91%;
+  --ring: 221 83% 53%;
+
+  --chart-1: 221 83% 53%;
+  --chart-2: 142 76% 36%;
+  --chart-3: 262 83% 58%;
+  --chart-4: 32 95% 44%;
+  --chart-5: 340 82% 52%;
+}
+
+.dark {
+  /* Dark Mode - Slate-based (Modern & Professional) */
+  --background: 222 47% 11%;
+  /* Deep slate, not pure black */
+  --foreground: 210 40% 98%;
+  /* Off-white text */
+
+  --card: 217 33% 17%;
+  /* Elevated slate */
+  --card-foreground: 210 40% 98%;
+
+  --popover: 217 33% 17%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 217 91% 60%;
+  /* Bright blue */
+  --primary-foreground: 222 47% 11%;
+
+  --secondary: 217 33% 17%;
+  /* Darker slate */
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  /* Medium gray text */
+
+  --accent: 217 33% 17%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217 33% 17%;
+  /* Subtle borders */
+  --input: 217 33% 17%;
+  --ring: 224 76% 48%;
+
+  --chart-1: 217 91% 60%;
+  --chart-2: 142 69% 58%;
+  --chart-3: 262 80% 68%;
+  --chart-4: 32 98% 56%;
+  --chart-5: 340 75% 56%;
+}
+
+/* Base Styles */
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: hsl(var(--ring) / 0.5);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%);
+  background-size: 1000px 100%;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* Loading Skeleton */
+.skeleton {
+  @apply animate-pulse bg-muted rounded-md;
+}

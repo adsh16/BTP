@@ -1,0 +1,16 @@
+flask
+gunicorn
+tqdm
+torch
+torchvision
+Flask
+werkzeug
+Pillow
+matplotlib
+tensorflow
+numpy
+typing-extensions
+google-generativeai
+flask-cors
+firebase-admin
+python-dotenv

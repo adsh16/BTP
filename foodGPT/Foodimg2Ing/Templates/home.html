@@ -1,0 +1,308 @@
+{% extends "layout.html" %}
+{% block home %}
+<style>
+    /* Home Specific Styles */
+    #info .card {
+        border-radius: 25px;
+        overflow: hidden;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 248, 244, 0.95));
+        animation: cardEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes cardEntrance {
+        from {
+            opacity: 0;
+            transform: translateY(50px) rotateX(-10deg);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+    }
+
+    #info .card-img-top {
+        height: 300px;
+        object-fit: cover;
+        position: relative;
+        transition: all 0.5s ease;
+    }
+
+    #info .card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    #info .card-img-top::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, transparent 0%, rgba(46, 125, 50, 0.1) 100%);
+    }
+
+    #infotitle {
+        background: linear-gradient(135deg, #2e7d32, #66bb6a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 2rem;
+        font-weight: 700;
+        animation: titlePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.02);
+        }
+    }
+
+    #infobody {
+        font-size: 1.1rem;
+        color: #555;
+        line-height: 1.8;
+        animation: fadeInText 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeInText {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .text-muted {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #4caf50 !important;
+        animation: fadeInText 1s ease-out 0.6s both;
+    }
+
+    /* Processing Time Badge */
+    .processing-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #4caf50, #66bb6a);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        animation: badgePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+        0%, 100% {
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        50% {
+            box-shadow: 0 6px 25px rgba(76, 175, 80, 0.5);
+        }
+    }
+
+    /* Enhanced Info Icons */
+    .info-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #4caf50, #66bb6a);
+        border-radius: 50%;
+        color: white;
+        font-size: 24px;
+        margin: 10px auto;
+        animation: iconFloat 3s ease-in-out infinite;
+        box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+    }
+
+    @keyframes iconFloat {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Feature Highlights */
+    .feature-highlight {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin: 20px 0;
+        padding: 15px;
+        background: rgba(76, 175, 80, 0.05);
+        border-radius: 15px;
+        border-left: 4px solid #4caf50;
+        transition: all 0.3s ease;
+        animation: slideInLeft 0.6s ease-out;
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .feature-highlight:hover {
+        background: rgba(76, 175, 80, 0.1);
+        transform: translateX(10px);
+        box-shadow: 0 5px 20px rgba(76, 175, 80, 0.15);
+    }
+
+    .feature-icon {
+        font-size: 28px;
+        color: #4caf50;
+    }
+
+    .feature-text {
+        flex: 1;
+        font-weight: 500;
+        color: #2e7d32;
+    }
+
+    /* Loading Enhancement */
+    #loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+    }
+
+    .loader-container {
+        text-align: center;
+        animation: loaderAppear 0.5s ease-out;
+    }
+
+    @keyframes loaderAppear {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Decorative Elements */
+    .card-body::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(76, 175, 80, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: decorativeFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes decorativeFloat {
+        0%, 100% {
+            transform: translate(0, 0);
+        }
+        50% {
+            transform: translate(-20px, 20px);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        #infotitle {
+            font-size: 1.5rem;
+        }
+        
+        #infobody {
+            font-size: 1rem;
+        }
+        
+        #info .card-img-top {
+            height: 200px;
+        }
+    }
+</style>
+
+<div id="info" class="col-md-8 animate-on-scroll">
+    <div class="card m-3">
+        <div style="position: relative; overflow: hidden;">
+            <img src="{{ url_for('static',filename='images/cover.jpg')}}" class="card-img-top" alt="Food Image">
+        </div>
+        <div class="card-body" style="position: relative;">
+            <div class="text-center mb-4">
+                <div class="info-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+            </div>
+            
+            <h5 class="card-title text-center" id="infotitle">Recipe Identification from Food Image</h5>
+            
+            <br>
+            
+            <div class="feature-highlight" style="animation-delay: 0.2s;">
+                <div class="feature-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <div class="feature-text">
+                    Upload your food image to get identified
+                </div>
+            </div>
+            
+            <div class="feature-highlight" style="animation-delay: 0.4s;">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="feature-text">
+                    Just in one click
+                </div>
+            </div>
+            
+            <div class="feature-highlight" style="animation-delay: 0.6s;">
+                <div class="feature-icon">
+                    <i class="fas fa-list-ul"></i>
+                </div>
+                <div class="feature-text">
+                    Get ingredients & recipe instantly
+                </div>
+            </div>
+            
+            <br>
+            
+            <p class="card-text text-center">
+                <span class="processing-badge">
+                    <i class="fas fa-clock"></i> Processing time: ~40 seconds
+                </span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<div id="loading" style="display:none;" class="col-md-8">
+    <div class="loader-container">
+        <div class="loader">
+            <div class="inner one"></div>
+            <div class="inner two"></div>
+            <div class="inner three"></div>
+        </div>
+        <h4 style="margin-top: -50px;">Cooking Up Your Recipe</h4>
+        <h5>Processing...</h5>
+    </div>
+</div>
+
+</div>
+</div>
+</div>    
+{% endblock home %}
