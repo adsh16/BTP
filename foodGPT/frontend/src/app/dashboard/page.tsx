@@ -35,7 +35,8 @@ export default function DashboardPage() {
         currentChatId,
         selectChat,
         createNewChat,
-        refreshChats
+        refreshChats,
+        saveChatHistory
     } = useChatHistory();
 
     // Initialize chat when recipe is loaded
@@ -44,6 +45,19 @@ export default function DashboardPage() {
             createNewChat();
         }
     }, [recipe, currentChatId, createNewChat]);
+
+    // Auto-save messages to Firestore whenever they change
+    useEffect(() => {
+        if (messages.length > 0 && currentChatId && recipe) {
+            const recipeData = {
+                title: recipe.title,
+                image_url: recipe.image_url,
+                ingredients: recipe.ingredients,
+                instructions: recipe.instructions
+            };
+            saveChatHistory(messages, recipeData);
+        }
+    }, [messages, currentChatId, recipe, saveChatHistory]);
 
     const handleUpload = async (file: File) => {
         setLoading(true);
@@ -107,10 +121,16 @@ export default function DashboardPage() {
         const chat = await selectChat(chatId);
         if (chat) {
             setMessages(chat.messages);
-            // If the chat has a recipe associated, we would load it here
-            // For now, we might need to fetch the recipe details if stored in the chat
-            // or just show the chat history
-            setShowChat(true);
+            // Restore recipe from chat history
+            if (chat.recipe) {
+                setRecipe({
+                    title: chat.recipe.title,
+                    image_url: chat.recipe.image_url || '',
+                    ingredients: chat.recipe.ingredients,
+                    instructions: chat.recipe.instructions
+                });
+                setShowChat(true);
+            }
         }
     };
 

@@ -10,11 +10,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Loader2, Sparkles } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Send, Loader2, Sparkles, ChefHat } from 'lucide-react';
 import { apiClient } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChatMessage } from '@/lib/firestore';
 import { getRandomSuggestions } from '@/lib/chatSuggestions';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface ChatInterfaceProps {
     recipeTitle?: string;
@@ -80,7 +83,7 @@ export function ChatInterface({ recipeTitle, messages, onMessagesChange }: ChatI
     };
 
     return (
-        <Card className="h-[600px] flex flex-col border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 backdrop-blur-sm">
+        <Card className="h-[800px] flex flex-col border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 backdrop-blur-sm">
             <CardHeader className="border-b border-gray-200 dark:border-slate-700">
                 <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
                     <Sparkles className="h-5 w-5 text-orange-600 dark:text-orange-400" />
@@ -144,15 +147,64 @@ export function ChatInterface({ recipeTitle, messages, onMessagesChange }: ChatI
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.2 }}
-                                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                        className="flex gap-3 items-start"
                                     >
-                                        <div
-                                            className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === 'user'
+                                        {/* Avatar */}
+                                        {message.role === 'assistant' ? (
+                                            <div className="flex-shrink-0">
+                                                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
+                                                    <ChefHat className="h-4 w-4 text-white" />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex-shrink-0">
+                                                <Avatar className="h-8 w-8">
+                                                    <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'User'} />
+                                                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-500 text-white text-xs">
+                                                        {user?.displayName?.[0]?.toUpperCase() || 'U'}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                            </div>
+                                        )}
+
+                                        {/* Message Content */}
+                                        <div className="flex-1 space-y-1">
+                                            <div className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                                                {message.role === 'assistant' ? 'Recipe Assistant' : (user?.displayName || 'You')}
+                                            </div>
+                                            <div
+                                                className={`rounded-lg px-4 py-3 ${message.role === 'user'
                                                     ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white'
                                                     : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-gray-100'
-                                                }`}
-                                        >
-                                            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                                                    }`}
+                                            >
+                                                <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-1">
+                                                    <ReactMarkdown
+                                                        remarkPlugins={[remarkGfm]}
+                                                        components={{
+                                                            p: ({ ...props }) => <p className="whitespace-pre-wrap" {...props} />,
+                                                            ul: ({ ...props }) => <ul className="list-disc ml-4" {...props} />,
+                                                            ol: ({ ...props }) => <ol className="list-decimal ml-4" {...props} />,
+                                                            li: ({ ...props }) => <li className="ml-2" {...props} />,
+                                                            strong: ({ ...props }) => <strong className="font-bold" {...props} />,
+                                                            code: ({ className, children, ...props }) => {
+                                                                const inline = !className;
+                                                                return inline ? (
+                                                                    <code className="px-1 py-0.5 rounded bg-gray-200 dark:bg-gray-600 text-sm" {...props}>
+                                                                        {children}
+                                                                    </code>
+                                                                ) : (
+                                                                    <code className="block p-2 rounded bg-gray-200 dark:bg-gray-600 text-sm overflow-x-auto" {...props}>
+                                                                        {children}
+                                                                    </code>
+                                                                );
+                                                            },
+                                                        }}
+                                                    >
+                                                        {message.content}
+                                                    </ReactMarkdown>
+                                                </div>
+                                            </div>
                                         </div>
                                     </motion.div>
                                 ))}
@@ -161,9 +213,14 @@ export function ChatInterface({ recipeTitle, messages, onMessagesChange }: ChatI
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="flex justify-start"
+                                    className="flex gap-3 items-start"
                                 >
-                                    <div className="bg-gray-100 dark:bg-slate-700 rounded-lg px-4 py-2">
+                                    <div className="flex-shrink-0">
+                                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
+                                            <ChefHat className="h-4 w-4 text-white" />
+                                        </div>
+                                    </div>
+                                    <div className="bg-gray-100 dark:bg-slate-700 rounded-lg px-4 py-3">
                                         <Loader2 className="h-4 w-4 animate-spin text-gray-600 dark:text-gray-400" />
                                     </div>
                                 </motion.div>
