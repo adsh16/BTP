@@ -9,7 +9,21 @@ const nextConfig: NextConfig = {
         port: '5000',
         pathname: '/static/**',
       },
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        port: '5000',
+        pathname: '/static/**',
+      },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://127.0.0.1:5000/api/:path*',
+      },
+    ];
   },
 };
 

@@ -159,7 +159,7 @@ export default function DashboardPage() {
                                 </Card>
                             </motion.div>
                         ) : (
-                            <div className="max-w-5xl mx-auto space-y-8 pb-20 pt-4">
+                            <div className="w-full max-w-[95%] mx-auto space-y-8 pb-20 pt-4">
                                 {/* Header */}
                                 {!recipe && !showChat && (
                                     <motion.div
@@ -168,7 +168,7 @@ export default function DashboardPage() {
                                         className="flex flex-col items-center text-center space-y-4"
                                     >
                                         <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
-                                            Generate Your Recipe
+                                            Upload Your Dish
                                         </h1>
                                         <p className="text-neutral-300 text-lg max-w-2xl mx-auto">
                                             Upload a food image or try a sample to get started
@@ -219,26 +219,26 @@ export default function DashboardPage() {
 
                                 {/* Results Section */}
                                 {!loading && (recipe || showChat) && (
-                                    <div className="grid lg:grid-cols-2 gap-8 items-start">
-                                        {/* Recipe Card */}
+                                    <div className="grid lg:grid-cols-2 gap-6 h-[calc(100vh-100px)]">
+                                        {/* Recipe Card Column */}
                                         <AnimatePresence mode="wait">
                                             {recipe && (
                                                 <motion.div
                                                     initial={{ opacity: 0, x: -20 }}
                                                     animate={{ opacity: 1, x: 0 }}
                                                     exit={{ opacity: 0, x: -20 }}
-                                                    className="lg:sticky lg:top-24"
+                                                    className="h-full overflow-y-auto pr-2 custom-scrollbar"
                                                 >
                                                     <RecipeCard recipe={recipe} />
                                                 </motion.div>
                                             )}
                                         </AnimatePresence>
 
-                                        {/* Chat Interface */}
+                                        {/* Chat Interface Column */}
                                         <motion.div
                                             initial={{ opacity: 0, x: 20 }}
                                             animate={{ opacity: 1, x: 0 }}
-                                            className="h-[calc(100vh-120px)] min-h-[600px]"
+                                            className="h-full"
                                         >
                                             <ChatInterface
                                                 recipeTitle={recipe?.title}

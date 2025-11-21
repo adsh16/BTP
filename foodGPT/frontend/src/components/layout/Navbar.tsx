@@ -48,8 +48,13 @@ export function Navbar() {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-2 group">
-                        <div className="bg-gradient-to-br from-orange-500 to-amber-500 p-2 rounded-lg group-hover:scale-110 transition-transform">
-                            <ChefHat className="h-6 w-6 text-white" />
+                        <div className="relative w-10 h-10 group-hover:scale-110 transition-transform">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src="/logo_edited_withoutbg.png"
+                                alt="Dishcovery Logo"
+                                className="w-full h-full object-contain drop-shadow-md"
+                            />
                         </div>
                         <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
                             Dishcovery
@@ -98,7 +103,7 @@ export function Navbar() {
                                             </AvatarFallback>
                                         </Avatar>
                                         <span className="text-xs text-gray-700 dark:text-gray-300 max-w-[80px] truncate">
-                                            {user.displayName || user.email?.split('@')[0] || 'User'}
+                                            {user.displayName?.split(' ')[0] || user.email?.split('@')[0] || 'User'}
                                         </span>
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -138,8 +143,8 @@ export function Navbar() {
                             </Link>
                         )}
                     </div>
-                </div>
-            </div>
-        </motion.nav>
+                </div >
+            </div >
+        </motion.nav >
     );
 }

@@ -71,7 +71,7 @@ Answer any questions the user has about this recipe. Be helpful, friendly, and p
     session.modified = True
     return context
 
-@llm_chat_bp.route('/api/chat/init', methods=['POST'])
+@llm_chat_bp.route('/chat/init', methods=['POST'])
 def init_chat():
     """Initialize chat with recipe context"""
     try:
@@ -114,7 +114,7 @@ def _format_history_for_gemini(history):
     return formatted
 
 
-@llm_chat_bp.route('/api/chat/message', methods=['POST'])
+@llm_chat_bp.route('/chat/message', methods=['POST'])
 def chat_message():
     """Handle chat messages"""
     try:
@@ -187,7 +187,9 @@ def chat_message():
         
         return jsonify({
             'status': 'success',
-            'message': assistant_message
+            'data': {
+                'message': assistant_message
+            }
         })
     
     except Exception as e:
@@ -197,7 +199,7 @@ def chat_message():
             'message': f'Sorry, I encountered an error processing your message. Please try again.'
         }), 500
 
-@llm_chat_bp.route('/api/chat/clear', methods=['POST'])
+@llm_chat_bp.route('/chat/clear', methods=['POST'])
 def clear_chat():
     """Clear chat history"""
     try:
@@ -216,7 +218,7 @@ def clear_chat():
             'message': str(e)
         }), 500
 
-@llm_chat_bp.route('/api/chat/suggestions', methods=['GET'])
+@llm_chat_bp.route('/chat/suggestions', methods=['GET'])
 def get_suggestions():
     """Get suggested questions based on recipe"""
     try:
