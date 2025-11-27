@@ -127,8 +127,6 @@ matplotlib>=3.3.0
 Download the required files and place them in the `data/` directory:
 
 - `modelbest.ckpt` - Pre-trained inverse cooking model weights
-- `ingr_vocab.pkl` - Ingredient vocabulary
-- `instr_vocab.pkl` - Instruction vocabulary
 
 ```bash
 mkdir -p Foodimg2Ing/data
