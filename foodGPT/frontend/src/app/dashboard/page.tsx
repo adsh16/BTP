@@ -21,6 +21,7 @@ import { useChatHistory } from '@/hooks/useChatHistory';
 import { ChatMessage } from '@/lib/firestore';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 import { RecipeCardSkeleton, ChatMessageSkeleton } from '@/components/shared/LoadingSkeletons';
+import { MultiStepLoader } from '@/components/shared/MultiStepLoader';
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -196,8 +197,10 @@ export default function DashboardPage() {
                                     </motion.div>
                                 )}
 
-                                {/* Upload Section */}
-                                {!recipe && !showChat && (
+                                {/* Upload Section or Multi-Step Loader */}
+                                {loading ? (
+                                    <MultiStepLoader />
+                                ) : !recipe && !showChat ? (
                                     <motion.div
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
@@ -223,7 +226,7 @@ export default function DashboardPage() {
                                             <SampleGallery onSelectSample={handleSelectSample} />
                                         </div>
                                     </motion.div>
-                                )}
+                                ) : null}
 
                                 {/* Loading State */}
                                 {loading && (

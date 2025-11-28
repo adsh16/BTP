@@ -57,7 +57,8 @@ export function ChatHistorySidebar({
                 <div className="p-4 border-b border-gray-200 dark:border-gray-800">
                     <Button
                         onClick={onNewChat}
-                        className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"
+                        variant="outline"
+                        className="w-full border-orange-500 text-orange-600 hover:bg-orange-50 dark:border-orange-600 dark:text-orange-400 dark:hover:bg-orange-950/20"
                     >
                         <Plus className="mr-2 h-4 w-4" />
                         New Chat
@@ -112,8 +113,8 @@ export function ChatHistorySidebar({
                     `}
                                     >
                                         <div className="flex items-start justify-between">
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">
+                                            <div className="flex-1 min-w-0 overflow-hidden">
+                                                <p className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate max-w-[220px]">
                                                     {chat.title}
                                                 </p>
                                                 <div className="flex items-center gap-1 mt-1">
