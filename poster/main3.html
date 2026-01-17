@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dishcovery Poster</title>
+
+    <style>
+        :root {
+
+            /* Classic Color Scheme */
+
+            --primary-blue: #00468C;
+
+            --primary-dark: #003366;
+
+            --accent-color: #f0f8ff;
+
+            --bg-color: #D6DCE5;
+
+            --text-color: #222;
+
+            --card-bg: #ffffff;
+
+
+
+            /* Classic Sans-Serif Fonts */
+
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+            --font-header: 'Segoe UI', Verdana, sans-serif;
+
+        }
+
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+
+        body {
+
+            font-family: var(--font-main);
+
+            background-color: #333;
+
+            width: 100vw;
+
+            height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            overflow: hidden;
+
+        }
+
+
+
+        /* --- 16:9 CONTAINER --- */
+
+        .poster {
+
+            aspect-ratio: 16 / 9;
+
+            width: min(99vw, 99vh * 16/9);
+
+            background-color: var(--bg-color);
+
+            color: var(--text-color);
+
+            position: relative;
+
+            overflow: hidden;
+
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+
+            container-type: inline-size;
+
+            display: flex;
+
+            flex-direction: column;
+
+            padding: 0.5cqw;
+
+        }
+
+
+
+        /* --- Header --- */
+
+        header {
+
+            background: linear-gradient(to right, var(--primary-dark), var(--primary-blue), var(--primary-dark));
+
+            color: white;
+
+            padding: 0.4cqw 1.5cqw;
+
+            border-radius: 0.3cqw;
+
+            margin-bottom: 0.5cqw;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            height: 6.5cqw;
+
+            flex-shrink: 0;
+
+            border: 0.15cqw solid #002244;
+
+            box-shadow: 0 0.3cqw 0.5cqw rgba(0, 0, 0, 0.2);
+
+        }
+
+
+
+        .logo-placeholder {
+
+            background-color: white;
+
+            width: 5.5cqw;
+
+            height: 5.5cqw;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 0.2cqw;
+
+            overflow: hidden;
+
+            border: 1px solid #ccc;
+
+        }
+
+        .logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+
+
+        .header-content {
+
+            flex: 1;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            text-align: center;
+
+        }
+
+
+
+        h1 {
+
+            font-family: var(--font-header);
+
+            font-size: 2.1cqw;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.03em;
+
+            margin-bottom: 0.2cqw;
+
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+            line-height: 1.1;
+
+        }
+
+
+
+        .authors {
+
+            font-size: 1.1cqw;
+
+            font-weight: 600;
+
+            margin-bottom: 0.2cqw;
+
+            color: #e0e0e0;
+
+        }
+
+
+
+        .meta-info {
+
+            font-size: 0.9cqw;
+
+            color: #fff;
+
+            background: rgba(255, 255, 255, 0.15);
+
+            padding: 0.15cqw 1.0cqw;
+
+            border-radius: 1cqw;
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+
+        }
+
+
+
+        /* --- Grid Layout --- */
+
+        .poster-grid {
+
+            display: grid;
+
+            grid-template-columns: 26% 45% 28%;
+
+            gap: 0.5cqw;
+
+            flex: 1;
+
+            overflow: hidden;
+
+        }
+
+
+
+        .column {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 0.4cqw;
+
+            height: 100%;
+
+            overflow: hidden;
+
+        }
+
+
+
+        /* Specific tweak for column 3 spacing */
+
+        .column-3 {
+
+            gap: 0.35cqw;
+            /* Even tighter gap for the rightmost column to fit content */
+
+        }
+
+
+
+        /* --- Card Styling --- */
+
+        .card {
+
+            background: var(--card-bg);
+
+            border-radius: 0.3cqw;
+
+            overflow: hidden;
+
+            box-shadow: 0 0.2cqw 0.4cqw rgba(0, 0, 0, 0.15);
+
+            border: 0.1cqw solid #aaa;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+
+        /* --- UNIFIED CARD HEADER SIZE --- */
+
+        .card-header {
+
+            background-color: var(--primary-blue);
+
+            color: white;
+
+            padding: 0.4cqw 0.8cqw;
+
+            font-family: var(--font-header);
+
+            font-size: 1.1cqw;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.02em;
+
+            border-bottom: 0.1cqw solid var(--primary-dark);
+
+            flex-shrink: 0;
+
+        }
+
+
+
+        .card-body {
+
+            padding: 0.5cqw;
+
+            font-size: 0.85cqw;
+
+            line-height: 1.4;
+
+            flex: 1;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: flex-start;
+
+            overflow: hidden;
+
+        }
+
+
+
+        /* --- Content Styling --- */
+
+        p {
+            margin-bottom: 0.4cqw;
+            text-align: justify;
+        }
+
+        ul,
+        ol {
+            padding-left: 1.4cqw;
+            margin-bottom: 0.4cqw;
+        }
+
+        li {
+            margin-bottom: 0.15cqw;
+        }
+
+
+
+        strong {
+
+            color: var(--primary-blue);
+
+            font-weight: 700;
+
+        }
+
+
+
+        /* --- Badges --- */
+
+        .tech-stack {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 0.3cqw;
+
+            margin-bottom: 0.5cqw;
+
+            justify-content: center;
+
+        }
+
+        .badge {
+
+            background: #e3f2fd;
+
+            border: 1px solid #2196f3;
+
+            padding: 0.1cqw 0.4cqw;
+
+            border-radius: 0.2cqw;
+
+            font-size: 0.65cqw;
+
+            font-weight: 700;
+
+            color: #0d47a1;
+
+            white-space: nowrap;
+
+        }
+
+
+
+        /* --- Image Placeholders --- */
+
+        .img-container {
+
+            width: 100%;
+
+            margin: 0.3cqw 0;
+
+            text-align: center;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+        }
+
+
+
+        /* Base styles for all diagrams */
+
+        .diagram-base {
+
+            max-width: 100%;
+
+            height: auto;
+
+            object-fit: contain;
+
+            border: 1px solid #ccc;
+
+            padding: 0.2cqw;
+
+            background: #fff;
+
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+        }
+
+
+
+        /* Specific class for ML Diagram (make bigger) */
+
+        .diagram-ml {
+
+            max-height: 24cqw;
+
+            width: 100%;
+
+        }
+
+
+
+        /* Specific class for Full Stack Diagram (standard/smaller) */
+
+        .diagram-fullstack {
+
+            max-height: 100%;
+
+            width: 100%;
+
+        }
+
+
+
+        .caption {
+
+            font-size: 0.75cqw;
+
+            color: #555;
+
+            text-align: center;
+
+            font-style: italic;
+
+            margin-top: 0.2cqw;
+
+            font-weight: 500;
+
+        }
+
+
+
+        /* --- Table Styling --- */
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: auto;
+
+            font-size: 0.8cqw;
+
+            border: 1px solid #ddd;
+
+        }
+
+        th,
+        td {
+
+            /* REDUCED PADDING to save vertical space in column 3 */
+
+            padding: 0.15cqw 0.4cqw;
+
+            border: 1px solid #ddd;
+
+            text-align: left;
+
+        }
+
+        th {
+
+            background-color: #f2f6fa;
+
+            color: var(--primary-blue);
+
+            font-weight: 700;
+
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+
+
+        /* --- References --- */
+
+        .references ol {
+            padding-left: 1.2cqw;
+            margin: 0;
+        }
+
+        .references li {
+            margin-bottom: 0.1cqw;
+            font-size: 0.65cqw;
+            color: #444;
+        }
+
+
+
+        /* --- Print --- */
+
+        @media print {}
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <div class="poster">
+
+
+
+        <!-- Header -->
+
+        <header>
+
+            <div class="logo-placeholder">
+
+                <!-- Replace with your Institute Logo -->
+
+                <img src="assets/iiitd_logo.jpg" alt="IIITD Logo">
+
+            </div>
+
+
+
+            <div class="header-content">
+
+                <h1>Dishcovery : Visual Question Answering for Food Images</h1>
+
+                <div class="authors">Aditya Sharma (2022038) &nbsp;&bull;&nbsp; Akshat Raj Saxena (2022054)</div>
+
+                <div class="meta-info">BTP Advisor: Dr. Ganesh Baglar &nbsp;|&nbsp; Track : Engineering Track</div>
+
+            </div>
+
+
+
+            <div class="logo-placeholder">
+
+                <!-- Replace with your Lab QR/Logo -->
+
+                <img src="assets/cosy_lab.png   " alt="Lab Logo">
+
+            </div>
+
+        </header>
+
+
+
+        <!-- Main Grid -->
+
+        <main class="poster-grid">
+
+
+
+            <!-- LEFT COLUMN -->
+
+            <div class="column">
+
+
+
+                <section class="card">
+
+                    <div class="card-header">Abstract & Motivation</div>
+
+                    <div class="card-body">
+
+                        <p>
+
+                            Food recognition is a challenging task due to high intra-class variance and low inter-class
+                            variance.
+
+                            <strong>Dishcovery</strong> aims to bridge the gap between visual food data and culinary
+                            insights.
+
+                            We implement an "Inverse Cooking" system that predicts ingredients from food images and
+                            subsequently
+
+                            generates cooking instructions, effectively performing Visual Question Answering (VQA) for
+                            the culinary domain.
+
+                        </p>
+
+                        <p style="margin-bottom: 0.2cqw;"><strong>Key Applications:</strong></p>
+
+                        <ul>
+
+                            <li><strong>Dietary Tracking:</strong> Automating nutrition analysis from photos.</li>
+
+                            <li><strong>Recipe Retrieval:</strong> Finding how to cook a dish simply by taking a picture
+                                of it.</li>
+
+                            <li><strong>Cultural Preservation:</strong> Documenting recipes from visual records.</li>
+
+                        </ul>
+
+                    </div>
+
+                </section>
+
+
+
+                <section class="card">
+
+                    <div class="card-header">Problem Statement</div>
+
+                    <div class="card-body">
+
+                        <p>Given an input image <em>I</em> of a prepared food dish, the system must:</p>
+
+                        <ol>
+
+                            <li><strong>Set Prediction:</strong> Predict an unordered set of ingredients
+                                <code>S = {s1, s2, ..., sN}</code>.
+                            </li>
+
+                            <li><strong>Sequence Generation:</strong> Generate a sequence of cooking instructions
+                                <code>R</code> conditioned on both the image <em>I</em> and the predicted ingredients
+                                <em>S</em>.
+                            </li>
+
+                        </ol>
+
+                    </div>
+
+                </section>
+
+
+
+                <section class="card" style="flex-grow: 1;">
+
+                    <div class="card-header">Dataset: Recipe1M+</div>
+
+                    <div class="card-body">
+
+                        <p>We utilized the <strong>Recipe1M+</strong> dataset, which contains over 1 million cooking
+                            recipes and 800k+ food images.</p>
+
+
+
+                        <div
+                            style="background: #f7f9fc; padding: 0.5cqw; border: 1px solid #ddd; border-radius: 0.2cqw;">
+
+                            <strong>Statistics:</strong>
+
+                            <ul style="margin-bottom: 0.4cqw;">
+
+                                <li><strong>Training:</strong> ~250k images with ingredient/instruction pairs.</li>
+
+                                <li><strong>Validation/Test:</strong> Standard splits used for evaluation.</li>
+
+                            </ul>
+
+
+
+                            <strong>Preprocessing:</strong>
+
+                            <ul style="margin-bottom: 0;">
+
+                                <li>Filtered recipes with &lt; 2 ingredients.</li>
+
+                                <li>Removed recipes without images.</li>
+
+                                <li>Created consistent vocabulary for ingredients.</li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+            </div>
+
+
+
+            <!-- MIDDLE COLUMN -->
+
+            <div class="column">
+
+
+
+                <!-- Methodology Card -->
+
+                <section class="card" style="flex: 0 0 auto;">
+
+                    <div class="card-header">Methodology: The Inverse Cooking Model</div>
+
+                    <div class="card-body">
+
+
+
+                        <!-- Two-Column Layout -->
+
+                        <div style="display: flex; gap: 0.8cqw; height: 100%; align-items: flex-start;">
+
+
+
+                            <!-- Left: Bigger Image -->
+
+                            <div style="flex: 2; display: flex; flex-direction: column; justify-content: center;">
+
+                                <!-- ML Architecture Diagram -->
+
+                                <div class="img-container" style="margin: 0;">
+
+                                    <img src="assets/ml diagram snake.png" alt="ML Model Pipeline Diagram"
+                                        class="diagram-base diagram-ml">
+
+                                </div>
+
+                                <div class="caption" style="margin-top: 0.2cqw;">Fig 1: The ML Pipeline showing flow
+                                    from visual encoding to recipe generation.</div>
+
+                            </div>
+
+
+
+                            <!-- Right: Explanation -->
+
+                            <div
+                                style="flex: 1.2; display: flex; flex-direction: column; justify-content: center; font-size: 0.85cqw;">
+
+                                <p style="margin-bottom: 0.4cqw;">Our approach decomposes recipe generation into two
+                                    interdependent stages to handle high intra-class variance.</p>
+
+
+
+                                <div
+                                    style="background: #f7f9fc; padding: 0.6cqw; border: 1px solid #ddd; border-radius: 0.2cqw;">
+
+                                    <p style="margin-bottom: 0.4cqw;"><strong>1. Visual Encoder (ResNet50):</strong>
+                                        <br>
+
+                                        Extracts rich 14x14x2048 spatial feature maps from the input image, capturing
+                                        texture and shape.
+                                    </p>
+
+
+
+                                    <p style="margin-bottom: 0.4cqw;"><strong>2. Ingredient Decoder:</strong> <br>
+
+                                        Predicts ingredients as a <em>set</em> (optimizing IoU). This avoids the penalty
+                                        of wrong order in standard sequence models.</p>
+
+
+
+                                    <p style="margin-bottom: 0;"><strong>3. Recipe Decoder:</strong> <br>
+
+                                        Generates instructions step-by-step. It uses <strong>co-attention</strong> to
+                                        attend to both visual features and predicted ingredients simultaneously.</p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- System Deployment Card -->
+
+                <section class="card" style="flex: 1 1 auto; min-height: 0;">
+                    <!-- min-height:0 enables shrink within flex -->
+
+                    <div class="card-header">System Deployment (Web App)</div>
+
+                    <div class="card-body">
+
+
+
+                        <!-- Two-Column Layout -->
+
+                        <div style="display: flex; gap: 0.8cqw; height: 100%; overflow: hidden;">
+
+
+
+                            <!-- Left: Bigger Image -->
+
+                            <div
+                                style="flex: 1.8; display: flex; flex-direction: column; height: 100%; justify-content: center;">
+
+                                <div class="img-container"
+                                    style="margin: 0; flex: 1; height: 80%; display:flex; align-items:center; justify-content:center;">
+
+                                    <img src="assets/full stack diagram new.svg" alt="Full Stack Architecture Diagram"
+                                        class="diagram-base diagram-fullstack">
+
+                                </div>
+
+                                <div class="caption" style="margin-top: 0.2cqw; flex-shrink: 0;">Fig 2: Full-stack
+                                    architecture enabling persistent chat & secure image handling.</div>
+
+                            </div>
+
+
+
+                            <!-- Right: Tech Stack & Details -->
+
+                            <div
+                                style="flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+
+                                <!-- Centered Tech Stack Badges (8 chips) -->
+
+                                <div class="tech-stack" style="margin-top: 0; flex-shrink: 0;">
+
+                                    <span class="badge">Next.js</span>
+
+                                    <span class="badge">React</span>
+
+                                    <span class="badge">Tailwind</span>
+
+                                    <span class="badge">Python</span>
+
+                                    <span class="badge">Flask API</span>
+
+                                    <span class="badge">PyTorch</span>
+
+                                    <span class="badge">Firebase</span>
+
+                                    <!-- <span class="badge">Gemini Pro</span> -->
+
+                                </div>
+
+
+
+                                <div
+                                    style="font-size: 0.85cqw; line-height: 1.4; display: flex; flex-direction: column; justify-content: space-evenly; flex: 1; overflow: hidden; background: #f7f9fc; border: 1px solid #ddd; border-radius: 0.2cqw; padding: 0.5cqw;">
+
+                                    <div style="margin-bottom: 0.4cqw;">
+
+                                        <strong>1. Frontend:</strong>
+
+                                        <div style="font-size: 0.85cqw;">Responsive UI with multi-step loading states
+                                            and intuitive design.</div>
+
+                                    </div>
+
+                                    <div style="margin-bottom: 0.4cqw;">
+
+                                        <strong>2. Backend:</strong>
+
+                                        <div style="font-size: 0.85cqw;">Python/Flask serving the PyTorch model for
+                                            inference.</div>
+
+                                    </div>
+
+                                    <div style="margin-bottom: 0;">
+
+                                        <strong>3.Persistence:</strong>
+
+                                        <div style="font-size: 0.85cqw;">Firestore for saving recipe history and user
+                                            data securely.</div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+                </section>
+
+
+
+            </div>
+
+
+
+            <!-- RIGHT COLUMN -->
+
+            <div class="column column-3">
+
+
+
+                <section class="card">
+
+                    <div class="card-header">Qualitative Results</div>
+
+                    <div class="card-body">
+
+                        <p>The model demonstrates the ability to identify key ingredients and generate coherent recipes.
+                        </p>
+
+                        <div style="display: flex; gap: 0.6cqw; height: 100%; align-items: stretch;">
+
+                            <div style="width: 35%; display: flex; flex-direction: column;">
+
+                                <div
+                                    style="background-color: #d0d0d0; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.9cqw; color: #777; border: 1px solid #ccc; border-radius: 0.2cqw;">
+
+                                    <img src="assets/pizza.jpg" alt="Input Food Image"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.2cqw;">
+
+                                </div>
+
+                                <div style="font-size: 0.75cqw; margin-top: 0.3cqw; text-align: center;">Input: Pizza
+                                </div>
+
+                            </div>
+
+                            <div style="width: 65%; font-size: 0.85cqw; padding-left: 0.5cqw;">
+
+                                <strong style="color: var(--primary-blue);">Model Output:</strong>
+
+                                <div style="margin-top:0.3cqw; line-height: 1.3;">
+
+                                    <span style="color:var(--primary-blue); font-weight:bold;">Ingredients:</span>
+                                    Dough, Cheese, Tomato Sauce, Basil.
+
+                                </div>
+
+                                <div style="margin-top:0.3cqw; line-height: 1.3;">
+
+                                    <span style="color:var(--primary-blue); font-weight:bold;">Instructions:</span><br>
+
+                                    1. Preheat oven to 400F.<br>
+
+                                    2. Roll out dough and spread sauce.<br>
+
+                                    3. Sprinkle cheese and bake for 15 mins.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <section class="card">
+
+                    <div class="card-header">Quantitative Analysis</div>
+
+                    <div class="card-body">
+
+                        <p>We evaluated the model using standard metrics for set prediction and text generation on the
+                            test set.</p>
+
+                        <table>
+
+                            <tr>
+
+                                <th>Metric</th>
+
+                                <th>Value</th>
+
+                                <th>Meaning</th>
+
+                            </tr>
+
+                            <tr>
+
+                                <td><strong>IoU</strong></td>
+
+                                <td>48.2%</td>
+
+                                <td>Ingredient Precision</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td><strong>F1 Score</strong></td>
+
+                                <td>56.4%</td>
+
+                                <td>Retrieval Accuracy</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td><strong>Perplexity</strong></td>
+
+                                <td>8.5</td>
+
+                                <td>Text Fluency (Lower better)</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td><strong>BLEU-4</strong></td>
+
+                                <td>16.3</td>
+
+                                <td>Overlap with Truth</td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+
+                <section class="card" style="flex-grow: 1;">
+
+                    <div class="card-header">Conclusion & Future Work</div>
+
+                    <div class="card-body">
+
+                        <p style="margin-bottom: 0.4cqw;">
+
+                            <strong>Conclusion:</strong> Visual Question Answering for food is viable. The two-step
+                            approach (Image → Ingredients → Recipe) outperforms direct mapping.
+
+                        </p>
+
+                        <p style="margin-bottom:0.2cqw;"><strong>Future Improvements:</strong></p>
+
+                        <ul style="margin-bottom: 0;">
+
+                            <li><strong>Integration:</strong> Mobile health apps for real-time tracking.</li>
+
+                            <li><strong>Cuisines:</strong> Improving performance on diverse cuisines (e.g., Indian).
+                            </li>
+
+                            <li><strong>Occlusion:</strong> Handling complex mixed food images.</li>
+
+                        </ul>
+
+                    </div>
+
+                </section>
+
+
+
+                <section class="card">
+
+                    <div class="card-header">References</div>
+
+                    <div class="card-body references">
+
+                        <ol>
+
+                            <li>Salvador et al. "Inverse cooking..." CVPR 2019.</li>
+
+                            <li>Vaswani et al. "Attention is all you need." NeurIPS 2017.</li>
+
+                            <li>Recipe1M+ Dataset.</li>
+
+                        </ol>
+
+                    </div>
+
+                </section>
+
+
+
+            </div>
+
+
+
+        </main>
+
+    </div>
+
+
+
+</body>
+
+</html>

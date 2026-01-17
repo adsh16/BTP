@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dishcovery Poster</title>
+    <style>
+        :root {
+            --primary-blue: #00468C;
+            --primary-dark: #003366;
+            --primary-green: #3CA078;
+            --bg-color: #E6E9ED;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #333; /* Dark background to highlight the poster canvas */
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide scrollbars on body, poster handles content */
+        }
+
+        /* --- THE STRICT 16:9 CONTAINER --- */
+        
+        .poster {
+            /* Option A: Responsive 16:9 Design Container */
+            aspect-ratio: 16 / 9;
+            width: min(95vw, 95vh * 16/9); /* 95% to leave a small visual margin */
+            
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            
+            /* CRITICAL: Enable Container Queries */
+            container-type: inline-size;
+            
+            /* Layout inside the poster */
+            display: flex;
+            flex-direction: column;
+            padding: 0.5cqw; /* Using cqw (Container Query Width) instead of vw */
+        }
+
+      
+        /* --- Compact Header --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+            color: white;
+            padding: 0.5cqw 2cqw;
+            border-radius: 0.5cqw;
+            box-shadow: 0 0.4cqw 0.6cqw rgba(0,0,0,0.1);
+            margin-bottom: 1.0cqw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 7.5cqw; /* Fixed proportional height */
+            flex-shrink: 0;
+        }
+
+        .logo-placeholder {
+            background-color: rgba(255, 255, 255, 0.9);
+            width: 6cqw;
+            height: 6cqw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.4cqw;
+            font-size: 0.7rem;
+            color: #333;
+            overflow: hidden;
+        }
+        
+        .logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border: none;
+        }
+
+        .header-content {
+            flex: 1;
+            padding: 0 2cqw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        h1 {
+            font-size: 2.2cqw; /* Scaled relative to poster width */
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.3cqw;
+            line-height: 1.1;
+        }
+
+        .authors {
+            font-size: 1.1cqw;
+            font-weight: 600;
+            margin-bottom: 0.3cqw;
+            color: #E0E0E0;
+        }
+
+        .meta-info {
+            font-size: 0.9cqw;
+            font-weight: 400;
+            color: #CCCCCC;
+            background: rgba(0,0,0,0.2);
+            padding: 0.1cqw 0.8cqw;
+            border-radius: 1cqw;
+        }
+
+        /* --- 3-Column Grid --- */
+        .poster-grid {
+            display: grid;
+            grid-template-columns: 28% 44% 28%;
+            gap: 1.2cqw;
+            flex: 1;
+            overflow: hidden; /* Prevent spillover */
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2cqw;
+            height: 100%;
+        }
+
+        /* --- Card Styling --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 0.5cqw;
+            overflow: hidden;
+            box-shadow: 0 0.2cqw 0.4cqw rgba(0,0,0,0.1);
+            border-top: 0.4cqw solid var(--primary-blue);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.5cqw 1cqw;
+            font-size: 1.0cqw;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-body {
+            padding: 0.8cqw 1cqw;
+            font-size: 0.9cqw; 
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* --- Typography & Elements --- */
+        p { margin-bottom: 0.6cqw; text-align: justify; line-height: 1.4; }
+        ul, ol { padding-left: 1.5cqw; margin-bottom: 0.6cqw; }
+        li { margin-bottom: 0.2cqw; }
+
+        strong { color: var(--primary-blue); }
+
+        /* Tech Stack Badges */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5cqw;
+            margin-top: 0.5cqw;
+            justify-content: center;
+        }
+        .badge {
+            background: #f0f0f0;
+            border: 0.1cqw solid #ccc;
+            padding: 0.2cqw 0.6cqw;
+            border-radius: 0.3cqw;
+            font-size: 0.8cqw;
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 0.3cqw;
+        }
+
+        /* Architecture Block */
+        .arch-block {
+            background: #f8f9fa;
+            border: 0.1cqw dashed #ccc;
+            padding: 0.8cqw;
+            border-radius: 0.5cqw;
+            margin-bottom: 0.8cqw;
+        }
+        .arch-step {
+            margin-bottom: 0.5cqw;
+        }
+        .arch-title {
+            color: var(--primary-blue);
+            font-weight: bold;
+            font-size: 0.95cqw;
+            display: block;
+            margin-bottom: 0.2cqw;
+        }
+
+        /* Images */
+        .img-container {
+            width: 100%;
+            margin: 0.5cqw 0;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.3cqw;
+            border: 1px solid #ddd;
+        }
+        .caption {
+            font-size: 0.8cqw;
+            color: #666;
+            margin-top: 0.3cqw;
+            font-style: italic;
+        }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 0.5cqw; font-size: 0.85cqw; }
+        th, td { padding: 0.3cqw; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background-color: #f2f2f2; color: var(--primary-blue); }
+
+        /* References */
+        .references { font-size: 0.75cqw; color: #555; }
+        .references li { margin-bottom: 0.1cqw; }
+
+        /* --- Print Configuration --- */
+        @media print {
+            body {
+                background: white;
+                width: 100%;
+                height: 100%;
+                display: block;
+                overflow: visible;
+            }
+            .poster {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 16/9 !important;
+                box-shadow: none;
+                margin: 0;
+                page-break-after: always;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STRICT 16:9 POSTER CONTAINER -->
+    <div class="poster">
+
+        <!-- Header -->
+        <header>
+            <div class="logo-placeholder">
+                <!-- Replace with IIITD Logo -->
+                <!-- <img src="https://placehold.co/150x150?text=IIITD" alt="IIITD Logo"> -->
+                <img src="assets/iiitd_logo.jpg" alt="IIITD Logo">
+            </div>
+            
+            <div class="header-content">
+                <h1>Dishcovery : Visual Question Answering for Food Images</h1>
+                <div class="authors">Aditya Sharma (2022038) &nbsp;&bull;&nbsp; Akshat Raj Saxena (2022054)</div>
+                <div class="meta-info">BTP Advisor: Dr. Ganesh Baglar &nbsp;|&nbsp; Track : Engineering Track</div>
+            </div>
+
+            <div class="logo-placeholder">
+                <!-- Replace with Lab Logo / QR Code -->
+                 <!-- <img src="https://placehold.co/150x150?text=Lab+QR" alt="Lab Logo"> -->
+                 <img src="assets/cosy_lab.png" alt="Lab Logo">
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="poster-grid">
+
+            <!-- LEFT COLUMN: Intro & Problem -->
+            <div class="column">
+                
+                <section class="card">
+                    <div class="card-header">Abstract & Motivation</div>
+                    <div class="card-body">
+                        <p>
+                            Food recognition traditionally stops at classification (e.g., "This is Pizza"). 
+                            <strong>Dishcovery</strong> bridges the gap between visual data and culinary insights by implementing an 
+                            "Inverse Cooking" system. It performs Visual Question Answering (VQA) to predict ingredients and 
+                            generate cooking instructions from a single image.
+                        </p>
+                        <p><strong>Applications:</strong></p>
+                        <ul>
+                            <li>Dietary Tracking & Nutrition Analysis.</li>
+                            <li>Recipe Retrieval from visual records.</li>
+                            <li>Cultural Preservation of undocumented dishes.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">Problem Statement</div>
+                    <div class="card-body">
+                        <p>Given an input image <em>I</em> of a prepared food dish, the system must:</p>
+                        <ol>
+                            <li><strong>Set Prediction:</strong> Predict an unordered set of ingredients <code>S = {s1, s2, ..., sN}</code>.</li>
+                            <li><strong>Sequence Generation:</strong> Generate a sequence of cooking instructions <code>R</code> conditioned on both <em>I</em> and <em>S</em>.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <section class="card" style="flex-grow: 1;">
+                    <div class="card-header">System Deployment (Web App)</div>
+                    <div class="card-body">
+                        <p>
+                            Beyond the core model, we engineered a full-stack web application for real-world usability, 
+                            enabling persistent chat history and secure user management.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="badge" style="border-color: #000;">Next.js</span>
+                            <span class="badge" style="border-color: #61DAFB;">React</span>
+                            <span class="badge" style="border-color: #38B2AC;">Tailwind</span>
+                            <span class="badge" style="border-color: #000;">Flask API</span>
+                            <span class="badge" style="border-color: #FFCA28;">Firebase</span>
+                        </div>
+                        <ul style="margin-top: 0.8cqw;">
+                            <li><strong>Frontend:</strong> Responsive UI with multi-step loading states.</li>
+                            <li><strong>Backend:</strong> Python/Flask serving the PyTorch model.</li>
+                            <li><strong>Persistence:</strong> Firestore for saving recipe history.</li>
+                        </ul>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- MIDDLE COLUMN: Methodology (The Core Work) -->
+            <div class="column">
+
+                <section class="card" style="flex: 2;">
+                    <div class="card-header">Methodology: Inverse Cooking Architecture</div>
+                    <div class="card-body">
+                        <p>Our approach decomposes recipe generation into two interdependent stages to handle the high intra-class variance in food images.</p>
+                        
+                        <div class="arch-block">
+                            <div class="arch-step">
+                                <span class="arch-title">1. Visual Encoder (ResNet50)</span>
+                                Extracts spatial feature maps (14x14x2048) from the input image. Pre-trained on ImageNet.
+                            </div>
+                            <div class="arch-step">
+                                <span class="arch-title">2. Ingredient Decoder (Transformer)</span>
+                                Predicts ingredients as a <em>set</em>. Uses a specialized loss to optimize Intersection over Union (IoU) rather than order, handling variable ingredient counts naturally.
+                            </div>
+                            <div class="arch-step">
+                                <span class="arch-title">3. Recipe Decoder (Transformer)</span>
+                                Generates the title and cooking steps. It employs <strong>co-attention</strong> to attend to both the visual features and the predicted ingredient embeddings simultaneously.
+                            </div>
+                        </div>
+
+                        <div class="img-container">
+                            <!-- REPLACE WITH ARCHITECTURE DIAGRAM -->
+                            <!-- <img src="https://placehold.co/500x200?text=Architecture+Diagram:+Image+->+Encoder+->+Ingr+Decoder+->+Recipe+Decoder" alt="System Architecture"> -->
+                            <img src="assets/BTP poster diagram-2025-12-09-040410.png" style="width: 500px;height: 200px;" alt="System Architecture">
+                            <div class="caption">Figure 1: The End-to-End Pipeline. Visual features guide ingredient prediction, which in turn guides instruction generation.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card" style="flex: 1;">
+                    <div class="card-header">Dataset: Recipe1M+</div>
+                    <div class="card-body">
+                        <div style="display: flex; gap: 1cqw;">
+                            <div style="flex: 1;">
+                                <ul>
+                                    <li><strong>Source:</strong> Recipe1M+ Large-scale dataset.</li>
+                                    <li><strong>Volume:</strong> 1M+ text recipes, 800k+ images.</li>
+                                    <li><strong>Structure:</strong> Triplets of {Image, Ingredients, Instructions}.</li>
+                                </ul>
+                            </div>
+                            <div style="flex: 1; background: #f0f0f0; padding: 0.5cqw; border-radius: 0.4cqw; font-size: 0.85cqw;">
+                                <strong>Preprocessing:</strong>
+                                <br>• Filtered recipes < 2 ingredients.
+                                <br>• Removed recipes without images.
+                                <br>• Created consistent vocabulary.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Results & Conclusion -->
+            <div class="column">
+
+                <section class="card">
+                    <div class="card-header">Qualitative Results</div>
+                    <div class="card-body">
+                        <div style="display: flex; gap: 0.8cqw; align-items: flex-start;">
+                            <div style="width: 40%;">
+                                <!-- REPLACE WITH RESULT IMAGE -->
+                                <img src="https://placehold.co/300x300?text=Pizza+Input" alt="Food Input">
+                                <div style="text-align: center; font-size: 0.8cqw; margin-top: 0.2cqw;">Input: Pizza</div>
+                            </div>
+                            <div style="width: 60%; background: #f4f4f4; padding: 0.6cqw; border-radius: 0.4cqw; font-size: 0.85cqw;">
+                                <strong>Model Output:</strong>
+                                <div style="margin-top: 0.3cqw; color: #444;">
+                                    <span style="color: var(--primary-blue);">Ingredients:</span> Dough, Cheese, Sauce, Basil.
+                                </div>
+                                <div style="margin-top: 0.3cqw; color: #444;">
+                                    <span style="color: var(--primary-blue);">Instructions:</span>
+                                    <br>1. Roll dough.
+                                    <br>2. Add toppings.
+                                    <br>3. Bake at 400F.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">Quantitative Analysis</div>
+                    <div class="card-body">
+                        <table>
+                            <tr>
+                                <th>Metric</th> <th>Value</th> <th>Meaning</th>
+                            </tr>
+                            <tr>
+                                <td><strong>IoU</strong></td> <td>48.2%</td> <td>Ingredient Precision</td>
+                            </tr>
+                            <tr>
+                                <td><strong>F1 Score</strong></td> <td>56.4%</td> <td>Retrieval Accuracy</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Perplexity</strong></td> <td>8.5</td> <td>Text Fluency (Lower better)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>BLEU-4</strong></td> <td>16.3</td> <td>Overlap with Truth</td>
+                            </tr>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="card" style="flex-grow: 1;">
+                    <div class="card-header">Conclusion & Future Work</div>
+                    <div class="card-body">
+                        <p>Successfully demonstrated a viable pipeline for visual food reasoning.</p>
+                        <p><strong>Future Improvements:</strong></p>
+                        <ul>
+                            <li><strong>Batch Processing:</strong> Handling multiple images.</li>
+                            <li><strong>Regional Cuisines:</strong> Fine-tuning for Indian dishes.</li>
+                            <li><strong>Caloric Estimation:</strong> Adding nutritional data.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">References</div>
+                    <div class="card-body references">
+                        <ol>
+                            <li>Salvador et al. "Inverse cooking..." CVPR 2019.</li>
+                            <li>Vaswani et al. "Attention is all you need." NeurIPS 2017.</li>
+                            <li>Recipe1M+ Dataset.</li>
+                        </ol>
+                    </div>
+                </section>
+
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
