@@ -3,6 +3,8 @@
 - Dishcovery: A end-to-end VQA(Visual Question Answering) model for Food Images
 code files and relevant things related to btp
 
+# Poster
+![BTP Poster](./poster/btp%20poster.png)
 
 # References
 
