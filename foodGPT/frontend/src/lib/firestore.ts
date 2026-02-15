@@ -38,6 +38,14 @@ export interface Chat {
     updatedAt: Date;
 }
 
+export interface UserRecipe {
+    id: string;           // chatId
+    title: string;
+    image_url?: string;
+    createdAt: Date;
+}
+
+
 /**
  * Save a chat conversation to Firestore
  */
@@ -50,7 +58,6 @@ export async function saveChat(
     try {
         const chatRef = doc(db, 'users', userId, 'chats', chatId);
 
-        // Generate title from first user message (max 50 chars)
         const firstUserMessage = messages.find(m => m.role === 'user')?.content || 'New Chat';
         const title = firstUserMessage.slice(0, 50) + (firstUserMessage.length > 50 ? '...' : '');
 
@@ -72,6 +79,7 @@ export async function saveChat(
         throw error;
     }
 }
+
 
 /**
  * Load a specific chat conversation
@@ -104,6 +112,7 @@ export async function loadChat(userId: string, chatId: string): Promise<Chat | n
     }
 }
 
+
 /**
  * Get all chat conversations for a user
  */
@@ -130,6 +139,39 @@ export async function getUserChats(userId: string, limitCount = 50): Promise<Cha
         });
     } catch (error) {
         console.error('Error getting user chats:', error);
+        return [];
+    }
+}
+
+
+/**
+ * 🔥 NEW: Get unique recipes derived from user chats
+ */
+export async function getUserRecipesFromChats(userId: string): Promise<UserRecipe[]> {
+    try {
+        const chats = await getUserChats(userId);
+
+        const recipesMap = new Map<string, UserRecipe>();
+
+        chats.forEach(chat => {
+            if (!chat.recipe) return;
+
+            const key = chat.recipe.title;
+
+            // Keep latest chat for same recipe
+            if (!recipesMap.has(key)) {
+                recipesMap.set(key, {
+                    id: chat.id,
+                    title: chat.recipe.title,
+                    image_url: chat.recipe.image_url,
+                    createdAt: chat.createdAt,
+                });
+            }
+        });
+
+        return Array.from(recipesMap.values());
+    } catch (error) {
+        console.error('Error getting user recipes:', error);
         return [];
     }
 }

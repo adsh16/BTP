@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Navbar } from '@/components/layout/Navbar';
+import { Navbar } from "@/components/layout/Navbar";
 import { ImageUpload } from '@/components/recipe/ImageUpload';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { ChatInterface } from '@/components/chat/ChatInterface';
