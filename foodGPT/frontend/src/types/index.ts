@@ -1,8 +1,23 @@
+export interface FoodQualityData {
+    quality_score: number;
+    rating: string;
+    analysis: {
+        freshness: string;
+        texture: string;
+        color_quality: string;
+        cooking_level: string;
+        presentation: string;
+        hygiene_estimate: string;
+    };
+    explanation: string;
+}
+
 export interface Recipe {
     title: string;
     ingredients: string[];
     instructions: string[];
     image_url: string;
+    food_quality?: FoodQualityData;
 }
 
 export interface User {

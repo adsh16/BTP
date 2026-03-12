@@ -34,6 +34,12 @@ export interface Chat {
     image_url?: string;
     ingredients: string[];
     instructions: string[];
+    food_quality?: {
+      quality_score: number;
+      rating: string;
+      analysis: any;
+      explanation: string;
+    };
   };
   createdAt: Date;
   updatedAt: Date;
@@ -58,11 +64,33 @@ export async function saveChat(
   try {
     const chatRef = doc(db, "users", userId, "chats", chatId);
 
-    const firstUserMessage =
-      messages.find((m) => m.role === "user")?.content || "New Chat";
-    const title =
-      firstUserMessage.slice(0, 50) +
-      (firstUserMessage.length > 50 ? "..." : "");
+    // Use recipe title as chat title if available and valid
+    // Otherwise generate from ingredients or first message
+    let title: string;
+    const isInvalidTitle = !recipe?.title || 
+                          recipe.title.toLowerCase().includes("not a valid recipe") || 
+                          recipe.title.toLowerCase().includes("unknown");
+
+    if (recipe && !isInvalidTitle) {
+      title = recipe.title;
+    } else if (recipe && recipe.ingredients && recipe.ingredients.length > 0) {
+      // Generate title from top 2-3 ingredients
+      const topIngredients = recipe.ingredients.slice(0, 3);
+      const ingredientsString = topIngredients.join(", ");
+      title = `Dish with ${ingredientsString}${recipe.ingredients.length > 3 ? "..." : ""}`;
+    } else {
+      const firstUserMessage =
+        messages.find((m) => m.role === "user")?.content || "New Chat";
+      title =
+        firstUserMessage.slice(0, 50) +
+        (firstUserMessage.length > 50 ? "..." : "");
+    }
+
+    // Clean up undefined values from recipe (Firestore doesn't support undefined)
+    const cleanedRecipe = recipe ? {
+      ...recipe,
+      food_quality: recipe.food_quality || null
+    } : null;
 
     const chatData = {
       userId,
@@ -74,7 +102,7 @@ export async function saveChat(
             ? Timestamp.fromDate(m.timestamp)
             : m.timestamp,
       })),
-      recipe: recipe || null,
+      recipe: cleanedRecipe,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };

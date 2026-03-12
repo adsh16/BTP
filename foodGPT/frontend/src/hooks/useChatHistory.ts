@@ -44,11 +44,21 @@ export function useChatHistory() {
     }
   }, [user?.uid, loadUserChats]); // Only re-run when user ID changes
 
-  const createNewChat = useCallback(() => {
+  const createNewChat = useCallback(async (initialRecipe?: Chat["recipe"], initialMessages: ChatMessage[] = []) => {
     const newChatId = `chat_${Date.now()}`;
     setCurrentChatId(newChatId);
+    
+    if (user && (initialRecipe || initialMessages.length > 0)) {
+      try {
+        await saveChat(user.uid, newChatId, initialMessages, initialRecipe);
+        await loadUserChats();
+      } catch (error) {
+        console.error("Failed to save initial chat:", error);
+      }
+    }
+    
     return newChatId;
-  }, []);
+  }, [user, loadUserChats]);
 
   const selectChat = useCallback(
     async (chatId: string) => {

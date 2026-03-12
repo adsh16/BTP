@@ -10,6 +10,12 @@ export interface Recipe {
     ingredients: string[];
     instructions: string[];
     image_url: string;
+    food_quality?: {
+        quality_score: number;
+        rating: string;
+        analysis: any;
+        explanation: string;
+    };
 }
 
 export interface ApiResponse<T> {

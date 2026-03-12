@@ -3,6 +3,7 @@ from Foodimg2Ing import app
 from Foodimg2Ing.output import output
 from Foodimg2Ing.auth import require_auth, optional_auth
 from Foodimg2Ing.llm_chat import set_recipe_context
+from Foodimg2Ing.food_quality import analyze_food_quality
 import os
 from werkzeug.utils import secure_filename
 
@@ -64,11 +65,15 @@ def upload_recipe(current_user):
         # Run ML model
         title, ingredients, recipe = output(image_path)
 
+        # 🔥 Run Food Quality Analysis
+        quality_analysis = analyze_food_quality(image_path)
+
         recipe_data = {
             'title': title[0] if title else 'Unknown Recipe',
             'ingredients': ingredients[0] if ingredients else [],
             'instructions': recipe[0] if recipe else [],
-            'image_url': f'/static/demo_imgs/{filename}'
+            'image_url': f'/static/demo_imgs/{filename}',
+            'food_quality': quality_analysis
         }
 
         # Store recipe in session
@@ -104,14 +109,20 @@ def get_sample_recipe(samplefoodname, current_user):
         if not os.path.exists(imagefile):
             return jsonify({'status': 'error', 'message': 'Sample image not found'}), 404
 
+        # Run ML model
         title, ingredients, recipe = output(imagefile)
+
+        # 🔥 Run Food Quality Analysis
+        quality_analysis = analyze_food_quality(imagefile)
 
         recipe_data = {
             'title': title[0] if title else 'Unknown Recipe',
             'ingredients': ingredients[0] if ingredients else [],
             'instructions': recipe[0] if recipe else [],
-            'image_url': f'/static/images/{samplefoodname}.jpg'
+            'image_url': f'/static/images/{samplefoodname}.jpg',
+            'food_quality': quality_analysis
         }
+
 
         session['current_recipe'] = recipe_data
 

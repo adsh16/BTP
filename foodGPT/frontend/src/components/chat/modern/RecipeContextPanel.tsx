@@ -10,26 +10,21 @@ import { ChefHat, Clock, Users, X, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
-
-interface Recipe {
-  title: string;
-  image_url?: string;
-  ingredients: string[];
-  instructions: string[];
-  time?: string;
-  servings?: string;
-}
+import { FoodQualityCard } from "@/components/recipe/FoodQualityCard";
+import { Recipe as RecipeType } from "@/types";
 
 interface RecipeContextPanelProps {
-  recipe: Recipe;
+  recipe: RecipeType & { time?: string; servings?: string };
   isOpen?: boolean;
   onToggle?: () => void;
+  chatId?: string;
 }
 
 export function RecipeContextPanel({
   recipe,
   isOpen = true,
   onToggle,
+  chatId,
 }: RecipeContextPanelProps) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -116,6 +111,11 @@ export function RecipeContextPanel({
                         {recipe.title}
                       </h4>
                     </div>
+
+                    {/* Food Quality Card */}
+                    {recipe.food_quality && (
+                      <FoodQualityCard data={recipe.food_quality} chatId={chatId} />
+                    )}
 
                     {/* Meta Info */}
                     <div className="flex flex-wrap gap-2">
