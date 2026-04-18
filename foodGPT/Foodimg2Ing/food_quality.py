@@ -1,6 +1,9 @@
 import os
 import json
-import google.generativeai as genai
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", FutureWarning)
+    import google.generativeai as genai
 from PIL import Image
 from dotenv import load_dotenv
 

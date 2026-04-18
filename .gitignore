@@ -10,6 +10,11 @@ venv/
 .venv/
 env/
 
+# Keys and Secrets
+serviceAccountKey.json
+*.pem
+*.key
+
 # Environment variables
 .env
 .env.*

@@ -7,7 +7,10 @@ from flask import Blueprint, jsonify, request, session
 load_dotenv()
 
 try:
-    import google.generativeai as genai
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        import google.generativeai as genai
 except ImportError:
     genai = None
 
