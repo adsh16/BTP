@@ -1,5 +1,5 @@
 import os
-
+import time
 from dotenv import load_dotenv
 from flask import Blueprint, jsonify, request, session
 
@@ -14,12 +14,13 @@ except ImportError:
 
 llm_chat_bp = Blueprint("llm_chat", __name__)
 
-# Use stable model
 GEMINI_MODEL = "gemini-2.5-flash"
 
-# Load API key from .env
 api_key = os.getenv("GEMINI_API_KEY")
 
+# -----------------------------
+# Gemini Initialization
+# -----------------------------
 if genai is not None:
     try:
         if not api_key:
@@ -27,7 +28,7 @@ if genai is not None:
 
         genai.configure(api_key=api_key)
 
-        # Base model
+        # Reuse single model instance
         base_model = genai.GenerativeModel(GEMINI_MODEL)
 
     except Exception as e:
@@ -39,10 +40,15 @@ else:
 
 
 # -----------------------------
+# Rate Limiting
+# -----------------------------
+last_request_time = 0
+REQUEST_DELAY = 10  # seconds
+
+
+# -----------------------------
 # Session Helpers
 # -----------------------------
-
-
 def get_conversation_history():
     if "conversation_history" not in session:
         session["conversation_history"] = []
@@ -81,10 +87,10 @@ Instructions:
 {chr(10).join([f"{i + 1}. {step}" for i, step in enumerate(recipe_steps)])}
 
 Answer questions about this recipe. Provide:
-• cooking tips
-• ingredient substitutions
-• nutrition estimates when possible
-• concise helpful explanations.
+- cooking tips
+- ingredient substitutions
+- nutrition estimates when possible
+- concise helpful explanations.
 """
 
     session["recipe_context"] = context
@@ -96,11 +102,8 @@ Answer questions about this recipe. Provide:
 # -----------------------------
 # Chat Initialization
 # -----------------------------
-
-
 @llm_chat_bp.route("/chat/init", methods=["POST"])
 def init_chat():
-
     try:
         data = request.json
 
@@ -123,32 +126,12 @@ def init_chat():
 
 
 # -----------------------------
-# Format History
-# -----------------------------
-
-
-def format_history_for_gemini(history):
-
-    formatted = []
-    role_map = {"assistant": "model", "user": "user"}
-
-    for msg in history:
-        role = role_map.get(msg.get("role", "user"))
-        content = msg.get("content")
-
-        if content:
-            formatted.append({"role": role, "parts": [content]})
-
-    return formatted
-
-
-# -----------------------------
 # Chat Message
 # -----------------------------
-
-
 @llm_chat_bp.route("/chat/message", methods=["POST"])
 def chat_message():
+
+    global last_request_time
 
     try:
         if base_model is None:
@@ -170,51 +153,86 @@ def chat_message():
                 {"status": "error", "message": "No recipe context found"}
             ), 400
 
-        # limit context window
-        recent_history = conversation_history[-20:]
+        # -----------------------------
+        # Rate Limiting
+        # -----------------------------
+        current_time = time.time()
+        if current_time - last_request_time < REQUEST_DELAY:
+            time.sleep(REQUEST_DELAY)
 
-        formatted_history = format_history_for_gemini(recent_history)
+        last_request_time = time.time()
 
-        formatted_history.append({"role": "user", "parts": [user_message]})
+        # -----------------------------
+        # Build Prompt
+        # -----------------------------
+        recent_history = conversation_history[-10:]
 
-        # Add system instruction
-        chat_model = genai.GenerativeModel(
-            GEMINI_MODEL, system_instruction=recipe_context
+        history_text = "\n".join(
+            [f"{msg['role']}: {msg['content']}" for msg in recent_history]
         )
 
-        chat = chat_model.start_chat(history=formatted_history)
+        full_prompt = f"""
+{recipe_context}
+
+Conversation History:
+{history_text}
+
+User: {user_message}
+
+Answer clearly and concisely.
+"""
+
         print("User message:", user_message)
-        print("Recipe context:", recipe_context[:200])
 
-        response = chat.send_message(
-            user_message,
-            generation_config=genai.types.GenerationConfig(
-                temperature=0.7, top_p=0.9, max_output_tokens=2048
-            ),
-        )
-        print("Gemini response:", response)
+        # -----------------------------
+        # Call Gemini (single call)
+        # -----------------------------
+        try:
+            response = base_model.generate_content(
+                full_prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.7,
+                    top_p=0.9,
+                    max_output_tokens=1024,
+                ),
+            )
+        except Exception as e:
+            print("Gemini API error:", e)
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": "Rate limit hit. Please wait a few seconds.",
+                }
+            ), 429
 
-        # Safe parsing of Gemini output
+        # -----------------------------
+        # Parse Response
+        # -----------------------------
         assistant_message = ""
 
         try:
             if hasattr(response, "text") and response.text:
                 assistant_message = response.text.strip()
             else:
-                assistant_message = response.candidates[0].content.parts[0].text.strip()
+                assistant_message = (
+                    response.candidates[0].content.parts[0].text.strip()
+                )
         except Exception as e:
-            print("Gemini parse error:", e)
+            print("Parse error:", e)
             assistant_message = "Sorry, I couldn't generate a response."
 
         if not assistant_message:
-            assistant_message = "I'm sorry, I couldn't generate a complete response."
+            assistant_message = "I'm sorry, I couldn't generate a response."
 
-        # Save history
+        # -----------------------------
+        # Save History
+        # -----------------------------
         conversation_history.append({"role": "user", "content": user_message})
+        conversation_history.append(
+            {"role": "assistant", "content": assistant_message}
+        )
 
-        conversation_history.append({"role": "assistant", "content": assistant_message})
-
-        session["conversation_history"] = conversation_history[-20:]
+        session["conversation_history"] = conversation_history[-10:]
         session.modified = True
 
         return jsonify({"status": "success", "data": {"message": assistant_message}})
@@ -223,18 +241,14 @@ def chat_message():
         import traceback
 
         traceback.print_exc()
-
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
 # -----------------------------
 # Clear Chat
 # -----------------------------
-
-
 @llm_chat_bp.route("/chat/clear", methods=["POST"])
 def clear_chat():
-
     try:
         session["conversation_history"] = []
         session.modified = True
@@ -243,15 +257,12 @@ def clear_chat():
 
     except Exception as e:
         print("Clear chat error:", e)
-
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
 # -----------------------------
 # Suggestions
 # -----------------------------
-
-
 @llm_chat_bp.route("/chat/suggestions", methods=["GET"])
 def get_suggestions():
 
