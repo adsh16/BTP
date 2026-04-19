@@ -1,33 +1,3 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  experimental: {
-    allowedDevOrigins: ["localhost:3000", "192.168.0.101:3000"],
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '5000',
-        pathname: '/static/**',
-      },
-      {
-        protocol: 'http',
-        hostname: '127.0.0.1',
-        port: '5000',
-        pathname: '/static/**',
-      },
-    ],
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'http://127.0.0.1:5000/api/:path*',
-      },
-    ];
-  },
-};
-
-export default nextConfig;
+version https://git-lfs.github.com/spec/v1
+oid sha256:beae8baac4f8bfa360c1f7bb702d0cab6c85988fa38cf2abd7a851ba5253f17c
+size 588
