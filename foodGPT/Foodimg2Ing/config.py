@@ -14,6 +14,8 @@ class Config:
     
     # Flask settings
     SESSION_TYPE = 'filesystem'
+    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SECURE = True
     
     # CORS settings
     CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(',')
