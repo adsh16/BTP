@@ -9,6 +9,10 @@ from Foodimg2Ing.config import config
 config_name = os.environ.get('FLASK_ENV', 'development')
 app.config.from_object(config[config_name])
 
+# Initialize session
+from flask_session import Session
+Session(app)
+
 # Initialize CORS
 CORS(app, resources={
     r"/api/*": {
