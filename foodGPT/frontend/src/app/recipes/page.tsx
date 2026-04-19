@@ -266,7 +266,7 @@ export default function RecipesPage() {
                             src={
                               chat.recipe.image_url.startsWith("http")
                                 ? chat.recipe.image_url
-                                : `http://localhost:5000${chat.recipe.image_url}`
+                                : `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}${chat.recipe.image_url}`
                             }
                             alt={chat.recipe.title}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -358,7 +358,7 @@ export default function RecipesPage() {
                               src={
                                 chat.recipe.image_url.startsWith("http")
                                   ? chat.recipe.image_url
-                                  : `http://localhost:5000${chat.recipe.image_url}`
+                                  : `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}${chat.recipe.image_url}`
                               }
                               alt={chat.recipe.title}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"

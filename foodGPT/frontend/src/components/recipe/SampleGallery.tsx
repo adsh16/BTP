@@ -58,7 +58,7 @@ export function SampleGallery({ onSelectSample, loading = false }: SampleGallery
 
     const cards = samples.map(sample => ({
         title: sample.name.charAt(0).toUpperCase() + sample.name.slice(1),
-        src: `http://localhost:5000${sample.url}`,
+        src: `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}${sample.url}`,
         originalName: sample.name
     }));
 

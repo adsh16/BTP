@@ -134,7 +134,7 @@ export default function FoodQualityPage() {
               <div className="aspect-square relative">
                 {image_url && (
                    <img 
-                    src={image_url.startsWith("http") ? image_url : `http://localhost:5000${image_url}`} 
+                    src={image_url.startsWith("http") ? image_url : `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}${image_url}`} 
                     alt={title}
                     className="w-full h-full object-cover"
                   />

@@ -97,7 +97,7 @@ export function RecipeContextPanel({
                           src={
                             recipe.image_url.startsWith("http")
                               ? recipe.image_url
-                              : `http://localhost:5000${recipe.image_url}`
+                              : `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}${recipe.image_url}`
                           }
                           alt={recipe.title}
                           className="w-full h-full object-cover"

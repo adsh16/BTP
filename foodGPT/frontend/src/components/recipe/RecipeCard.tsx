@@ -44,7 +44,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
                             <div className="relative w-full h-80 rounded-xl overflow-hidden group-hover/card:shadow-xl">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
-                                    src={recipe.image_url ? `http://localhost:5000${recipe.image_url}` : "/placeholder-food.jpg"}
+                                    src={recipe.image_url ? (recipe.image_url.startsWith('http') ? recipe.image_url : `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}${recipe.image_url}`) : "/placeholder-food.jpg"}
                                     alt={recipe.name}
                                     className="h-full w-full object-cover"
                                 />

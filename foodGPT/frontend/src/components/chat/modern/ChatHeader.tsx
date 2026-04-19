@@ -40,7 +40,7 @@ export function ChatHeader({
                 src={
                   recipeImage.startsWith("http")
                     ? recipeImage
-                    : `http://localhost:5000${recipeImage}`
+                    : `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}${recipeImage}`
                 }
                 alt={recipeTitle || "Recipe"}
                 className="w-full h-full object-cover"
